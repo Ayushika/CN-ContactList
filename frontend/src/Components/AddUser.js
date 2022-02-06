@@ -23,8 +23,6 @@ const AddUser = ({ history }) => {
     } else if (res.data) {
       history.push("/");
     }
-
-    // <Alert variant='danger'>{error.message}</Alert>;
   };
 
   return (
