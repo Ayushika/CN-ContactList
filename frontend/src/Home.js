@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Button, Table, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import axios from "axios";
-const { Control } = Form;
+const { Control, Group } = Form;
 
 const Home = () => {
   const [users, setUsers] = useState([]);
@@ -23,7 +23,6 @@ const Home = () => {
           data: { id: id },
         },
       );
-
       setOk(res.data);
     }
   };
@@ -35,12 +34,16 @@ const Home = () => {
 
   return (
     <div className='container'>
-      <Control
-        type='text'
-        placeholder='Search'
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
+      <Form className='mt-5 mb-5'>
+        <Group className='mb-3'>
+          <Control
+            type='text'
+            placeholder='Search Contact'
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </Group>
+      </Form>
       <Table bordered hover>
         <thead>
           <tr className='text-center'>
@@ -53,38 +56,71 @@ const Home = () => {
           </tr>
         </thead>
         <tbody>
-          {search.length == 0 && users &&
-            users.length > 0 &&
-            users.map((u, i) => {
-              return (
-                <tr className='text-center' key={i + 1}>
-                  <td>{i + 1}</td>
-                  <td>{u.name}</td>
-                  <td>{u.number}</td>
-                  <td>{u.email}</td>
-                  <td>
-                    <i
-                      className='far fa-trash-alt text-danger'
-                      style={{ cursor: "pointer" }}
-                      onClick={() => {
-                        const id = u._id;
-                        deleteUser(id);
-                      }}></i>
-                  </td>
-                  <td>
-                    <Link to={`/updateuser/${u._id}`}>
+          {search.length > 0
+            ? users &&
+              users.length > 0 &&
+              users
+                .filter((u) => u.name.toLowerCase().includes(search))
+                .map((u, i) => {
+                  return (
+                    <tr className='text-center' key={i + 1}>
+                      <td>{i + 1}</td>
+                      <td>{u.name}</td>
+                      <td>{u.number}</td>
+                      <td>{u.email}</td>
+                      <td>
+                        <i
+                          className='far fa-trash-alt text-danger'
+                          style={{ cursor: "pointer" }}
+                          onClick={() => {
+                            const id = u._id;
+                            deleteUser(id);
+                          }}></i>
+                      </td>
+                      <td>
+                        <Link to={`/updateuser/${u._id}`}>
+                          <i
+                            className='far fa-edit text-warning'
+                            style={{ cursor: "pointer" }}></i>
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })
+            : users &&
+              users.length > 0 &&
+              users.map((u, i) => {
+                return (
+                  <tr className='text-center text-muted' key={i + 1}>
+                    <td>{i + 1}</td>
+                    <td>{u.name}</td>
+                    <td>{u.number}</td>
+                    <td>{u.email}</td>
+                    <td>
                       <i
-                        className='far fa-edit text-warning'
-                        style={{ cursor: "pointer" }}></i>
-                    </Link>
-                  </td>
-                </tr>
-              );
-            })}
+                        className='far fa-trash-alt text-danger'
+                        style={{ cursor: "pointer" }}
+                        onClick={() => {
+                          const id = u._id;
+                          deleteUser(id);
+                        }}></i>
+                    </td>
+                    <td>
+                      <Link to={`/updateuser/${u._id}`}>
+                        <i
+                          className='far fa-edit text-warning'
+                          style={{ cursor: "pointer" }}></i>
+                      </Link>
+                    </td>
+                  </tr>
+                );
+              })}
         </tbody>
       </Table>
       <Link to='/adduser'>
-        <Button variant='success'>Add User</Button>
+        <Button variant='success' className='mt-3'>
+          Add Contact
+        </Button>
       </Link>
     </div>
   );

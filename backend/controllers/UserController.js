@@ -7,25 +7,24 @@ import UserSchema from "../models/UserModel";
 //@access PUBLIC
 export const addUser = async (req, res) => {
   const { name, email, number } = req.body;
-  console.log("user : ", req.body);
+
   if (!name || !email || !number) {
-    return res.status(400).send("All fields are required");
+    return res.status(200).send({ message: "All fields are required" });
   }
 
+  //check if email already exists
   let user = await UserSchema.findOne({ email: email }).exec();
-  console.log("Email : ", user);
   if (user) {
-    return res.status(400).send("Email already exists");
+    return res.status(200).send({ message: "Email already exists" });
   }
 
+  //check if phone-number already exists
   user = await UserSchema.findOne({ number: number }).exec();
-  console.log("number : ", user);
   if (user) {
-    return res.status(400).send("Number already exists");
+    return res.status(200).send({ message: "Number already exists" });
   }
 
   user = await new UserSchema({ name, email, number }).save();
-  console.log("all : ", user);
   return res.status(200).send({ success: true });
 };
 
@@ -55,7 +54,24 @@ export const getUser = async (req, res) => {
 export const updateUser = async (req, res) => {
   const { name, email, number, id } = req.body;
 
-  const user = await UserSchema.findByIdAndUpdate(id, {
+  if (!name || !email || !number) {
+    return res.status(200).send({ message: "All fields are required" });
+  }
+
+  //check if email already exists
+  let user = await UserSchema.findOne({ email: email }).exec();
+
+  if (user && user._id.toString() !== id) {
+    return res.status(200).send({ message: "Email already exists" });
+  }
+
+  //check if phone-number already exists
+  user = await UserSchema.findOne({ number: number }).exec();
+  if (user && user._id.toString() !== id) {
+    return res.status(200).send({ message: "Number already exists" });
+  }
+
+  user = await UserSchema.findByIdAndUpdate(id, {
     name,
     email,
     number,

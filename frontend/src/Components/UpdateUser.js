@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { useState, useEffect } from "react";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, Alert } from "react-bootstrap";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 const { Group, Control } = Form;
@@ -10,6 +10,7 @@ const UpdateUser = ({ history }) => {
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
   const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
 
   const { id } = useParams();
   const updateUser = async () => {
@@ -20,7 +21,9 @@ const UpdateUser = ({ history }) => {
       id,
     });
 
-    history.push("/");
+    if (res.data.message) {
+      setMessage(res.data.message);
+    } else history.push("/");
   };
 
   useEffect(async () => {
@@ -33,14 +36,18 @@ const UpdateUser = ({ history }) => {
 
   return (
     <div className='container'>
-      <h2 className='mt-5'>Update User</h2>
+      <h2 className='mt-5'>Update Contact</h2>
       <Form className='mt-5'>
+        {message && <Alert variant='danger'>{message}</Alert>}
         <Group className='mb-3'>
           <Control
             type='text'
             placeholder='Name'
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {
+              setName(e.target.value);
+              setMessage("");
+            }}
           />
         </Group>
         <Group className='mb-3'>
@@ -48,7 +55,10 @@ const UpdateUser = ({ history }) => {
             type='text'
             placeholder='Phone'
             value={number}
-            onChange={(e) => setNumber(e.target.value)}
+            onChange={(e) => {
+              setNumber(e.target.value);
+              setMessage("");
+            }}
           />
         </Group>
         <Group className='mb-3'>
@@ -56,7 +66,10 @@ const UpdateUser = ({ history }) => {
             type='email'
             placeholder='Email'
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setMessage("");
+            }}
           />
         </Group>
 
