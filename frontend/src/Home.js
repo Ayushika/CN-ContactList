@@ -23,6 +23,7 @@ const Home = () => {
           data: { id: id },
         },
       );
+      
       setOk(res.data);
     }
   };
